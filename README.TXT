@@ -9,4 +9,4 @@ https://poi.apache.org/components/slideshow/
 https://poi.apache.org/components/slideshow/xslf-cookbook.html
 
 
-find-java -Version 1.8 -SetSession ; mvn -V clean verify -e
+clear ; ./jabbaw ./mvnw -V clean verify
