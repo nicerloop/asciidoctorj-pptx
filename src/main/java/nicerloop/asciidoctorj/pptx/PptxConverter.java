@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.apache.poi.sl.usermodel.Placeholder;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.asciidoctor.ast.Column;
+import org.apache.poi.xslf.usermodel.XSLFSimpleShape;
+import org.apache.poi.xslf.usermodel.XSLFSlide;
+import org.apache.poi.xslf.usermodel.XSLFTextShape;
 import org.asciidoctor.ast.ContentNode;
-import org.asciidoctor.ast.PhraseNode;
+import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.StructuralNode;
+import org.asciidoctor.ast.Title;
 import org.asciidoctor.converter.AbstractConverter;
 import org.asciidoctor.converter.ConverterFor;
 
@@ -35,19 +39,40 @@ public class PptxConverter extends AbstractConverter<XMLSlideShow> {
 	}
 
 	private void convertNode(ContentNode node, XMLSlideShow pptx) {
-		if (node instanceof Column) {
-			System.out.println(Column.class.getCanonicalName());
-			System.out.println(node.toString());
-		} else if (node instanceof PhraseNode) {
-			System.out.println(PhraseNode.class.getCanonicalName());
-			System.out.println(node.toString());
-		} else if (node instanceof StructuralNode) {
-			System.out.println(StructuralNode.class.getCanonicalName());
-			System.out.println(node.toString());
+		System.out.println("node " + node);
+		if (node instanceof Document) {
+			convertDocument((Document) node, pptx);
 		} else {
-			System.err.println("Unknown node type");
-			System.out.println(node.toString());
+			System.err.println("Ignored");
 		}
+	}
+
+	private void convertDocument(Document document, XMLSlideShow pptx) {
+		System.out.println("document " + document);
+		Title title = document.getStructuredDoctitle();
+		String mainTitle = title.getMain();
+		String subtitle = title.getSubtitle();
+		XSLFSlide slide = pptx.createSlide(pptx.findLayout("Title Slide"));
+		fillPlaceholder(slide, Placeholder.CENTERED_TITLE, mainTitle);
+		fillPlaceholder(slide, Placeholder.SUBTITLE, subtitle);
+		for (StructuralNode block : document.getBlocks()) {
+			convertStructuralNode((StructuralNode) block, pptx);
+		}
+	}
+	
+	private void fillPlaceholder(XSLFSlide slide, Placeholder placeholder, String text) {
+		XSLFSimpleShape shape = slide.getPlaceholder(placeholder);
+		if (shape != null && shape instanceof XSLFTextShape) {
+			XSLFTextShape textShape = (XSLFTextShape) shape;
+			textShape.clearText();
+			textShape.appendText(text, false);
+		}
+	}
+
+	private void convertStructuralNode(StructuralNode structuralNode, XMLSlideShow pptx) {
+		System.out.println("structuralNode " + structuralNode);
+		// TODO
+		convertNode(structuralNode, pptx);
 	}
 
 }
