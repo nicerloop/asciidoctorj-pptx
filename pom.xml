@@ -7,10 +7,15 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<surefire-failsafe.version>3.2.2</surefire-failsafe.version>
+		<pitest-maven.version>1.15.8</pitest-maven.version>
+		<pitest-junit5.version>1.2.1</pitest-junit5.version>
 		<asciidoctorj.version>2.5.12</asciidoctorj.version>
 		<apache.poi.version>5.2.5</apache.poi.version>
 		<cucumber.version>7.15.0</cucumber.version>
 		<junit-platform.version>1.10.2</junit-platform.version>
+		<serenity.version>4.1.4</serenity.version>
+		<junit.version>4.13.2</junit.version>
 		<assertj.version>3.25.1</assertj.version>
 		<approvaltests.version>23.0.0</approvaltests.version>
 	</properties>
@@ -27,19 +32,29 @@
 				<version>${apache.poi.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>io.cucumber</groupId>
-				<artifactId>cucumber-junit-platform-engine</artifactId>
-				<version>${cucumber.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.junit.platform</groupId>
 				<artifactId>junit-platform-suite</artifactId>
 				<version>${junit-platform.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.cucumber</groupId>
+				<artifactId>cucumber-junit-platform-engine</artifactId>
+				<version>${cucumber.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.cucumber</groupId>
 				<artifactId>cucumber-java</artifactId>
 				<version>${cucumber.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.serenity-bdd</groupId>
+				<artifactId>serenity-cucumber</artifactId>
+				<version>${serenity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.assertj</groupId>
@@ -64,18 +79,28 @@
 			<artifactId>poi-ooxml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-junit-platform-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-suite</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit-platform-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-cucumber</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -92,10 +117,10 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.2</version>
+				<version>${surefire-failsafe.version}</version>
 				<configuration>
+					<skip>true</skip>
 					<properties>
 						<configurationParameters>
 							cucumber.junit-platform.naming-strategy=long
@@ -104,9 +129,53 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${surefire-failsafe.version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/Test*.java</include>
+						<include>**/*TestSuite.java</include>
+						<include>**/When*.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>net.serenity-bdd.maven.plugins</groupId>
+				<artifactId>serenity-maven-plugin</artifactId>
+				<version>${serenity.version}</version>
+				<configuration>
+					<reports>single-page-html</reports>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.serenity-bdd</groupId>
+						<artifactId>serenity-single-page-report</artifactId>
+						<version>${serenity.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>serenity-reports</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
-				<version>1.15.8</version>
+				<version>${pitest-maven.version}</version>
 				<executions>
 					<execution>
 						<id>mutation-coverage</id>
@@ -120,7 +189,7 @@
 					<dependency>
 						<groupId>org.pitest</groupId>
 						<artifactId>pitest-junit5-plugin</artifactId>
-						<version>1.2.1</version>
+						<version>${pitest-junit5.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
