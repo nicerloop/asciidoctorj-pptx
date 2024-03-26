@@ -7,7 +7,7 @@ Feature: Create a new slideshow
   Scenario: Title
     Given I have an asciidoc document named "input.adoc" in the "input" folder containing
       """
-      = Main Title: Subtitle
+= Main Title: Subtitle
       """
     When I convert "input"."input.adoc" into "output"."output.pptx"
     Then a "output.pptx" slideshow is present in the "output" folder

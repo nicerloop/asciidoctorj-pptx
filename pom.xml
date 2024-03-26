@@ -7,6 +7,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<surefire-failsafe.version>3.2.2</surefire-failsafe.version>
 		<pitest-maven.version>1.15.8</pitest-maven.version>
 		<pitest-junit5.version>1.2.1</pitest-junit5.version>
@@ -18,6 +20,7 @@
 		<junit.version>4.13.2</junit.version>
 		<assertj.version>3.25.1</assertj.version>
 		<approvaltests.version>23.0.0</approvaltests.version>
+		<spotless.version>2.43.0</spotless.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -192,6 +195,26 @@
 						<version>${pitest-junit5.version}</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless.version}</version>
+				<configuration>
+					<java>
+						<cleanthat />
+						<eclipse />
+						<removeUnusedImports />
+						<formatAnnotations />
+					</java>
+					<pom />
+					<gherkin>
+						<includes>
+							<include>src/**/*.feature</include>
+						</includes>
+						<gherkinUtils />
+					</gherkin>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

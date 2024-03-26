@@ -59,7 +59,7 @@ public class PptxConverter extends AbstractConverter<XMLSlideShow> {
 			convertStructuralNode((StructuralNode) block, pptx);
 		}
 	}
-	
+
 	private void fillPlaceholder(XSLFSlide slide, Placeholder placeholder, String text) {
 		XSLFSimpleShape shape = slide.getPlaceholder(placeholder);
 		if (shape != null && shape instanceof XSLFTextShape) {
