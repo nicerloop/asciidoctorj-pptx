@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.approvaltests.awt.AwtApprovals;
+import org.approvaltests.image.ImageApprovals;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 
@@ -78,6 +78,6 @@ public class SlideshowSteps {
 
     @Then("the slide looks like expected")
     public void the_slide_looks_like_expected() {
-        pptx.getSlides().stream().map(PptxSupport::image).forEach(AwtApprovals::verify);
+        pptx.getSlides().stream().map(PptxSupport::image).forEach(ImageApprovals::verify);
     }
 }
