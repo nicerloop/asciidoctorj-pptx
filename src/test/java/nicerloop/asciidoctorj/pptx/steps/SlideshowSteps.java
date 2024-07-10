@@ -5,6 +5,8 @@ import static java.nio.file.Files.write;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
@@ -15,12 +17,15 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
+import org.apache.poi.xslf.usermodel.XSLFSlideLayout;
 import org.approvaltests.Approvals;
 import org.approvaltests.image.ImageApprovals;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
+import org.assertj.core.api.Assertions;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -82,4 +87,26 @@ public class SlideshowSteps {
         pptx.getSlides().stream().map(PptxSupport::svg).forEach(Approvals::verifyXml);
         pptx.getSlides().stream().map(PptxSupport::image).forEach(ImageApprovals::verify);
     }
+
+    @Given("the asciidoc document has a complete test case")
+    public void the_asciidoc_document_has_a_complete_test_case() {
+        appendToAsciidoc("= Title");
+    }
+
+    @Then("the slideshow uses all layouts")
+    public void the_slideshow_uses_all_layouts() {
+        List<XSLFSlideLayout> masterLayouts = pptx.getSlideMasters().stream() //
+                .flatMap(master -> stream(master.getSlideLayouts())).collect(toList());
+        List<XSLFSlideLayout> slideLayouts = pptx.getSlides().stream() //
+                .map(slide -> slide.getSlideLayout()).collect(toList());
+        Assertions.assertThat(slideLayouts).containsAll(masterLayouts);
+    }
+
+    @Then("each layout has all placeholders filled")
+    public void each_layout_has_all_placeholders_filled() {
+        pptx.getSlides().stream().forEach(slide -> stream(slide.getPlaceholders())
+                .forEach(placeholder -> assertThat(placeholder.getText()).isNotEmpty()));
+
+    }
+
 }
