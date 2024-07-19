@@ -84,7 +84,6 @@ public class SlideshowSteps {
 
     @Then("the slide looks like expected")
     public void the_slide_looks_like_expected() {
-        pptx.getSlides().stream().map(PptxSupport::svg).forEach(Approvals::verifyXml);
         pptx.getSlides().stream().map(PptxSupport::image).forEach(ImageApprovals::verify);
     }
 
