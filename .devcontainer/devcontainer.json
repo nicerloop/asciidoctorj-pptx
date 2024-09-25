@@ -6,7 +6,10 @@
 	"image": "mcr.microsoft.com/devcontainers/java:1-11-bullseye",
 
 	"features": {
-		"ghcr.io/devcontainers/features/java:1": {},
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "none",
+			"installMaven": true
+		},
 		"ghcr.io/devcontainers/features/desktop-lite:1": {}
 	}
 
