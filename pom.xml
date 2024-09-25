@@ -16,7 +16,9 @@
 		<asciidoctorj.version>2.5.12</asciidoctorj.version>
 		<apache.poi.version>5.2.5</apache.poi.version>
 		<cucumber.version>7.15.0</cucumber.version>
-		<junit-platform.version>1.10.2</junit-platform.version>
+		<junit5.version>10.2</junit5.version>
+		<junit-platform.version>1.${junit5.version}</junit-platform.version>
+		<junit-jupiter.version>5.${junit5.version}</junit-jupiter.version>
 		<serenity.version>4.1.4</serenity.version>
 		<junit.version>4.13.2</junit.version>
 		<assertj.version>3.25.1</assertj.version>
@@ -35,6 +37,11 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
 				<version>${apache.poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-engine</artifactId>
+				<version>${junit-jupiter.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.junit.platform</groupId>
@@ -87,6 +94,11 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.platform</groupId>
