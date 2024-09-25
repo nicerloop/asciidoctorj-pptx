@@ -11,7 +11,6 @@ import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTextShape;
 import org.asciidoctor.ast.ContentNode;
 import org.asciidoctor.ast.Document;
-import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.Title;
 import org.asciidoctor.converter.AbstractConverter;
 import org.asciidoctor.converter.ConverterFor;
@@ -39,25 +38,16 @@ public class PptxConverter extends AbstractConverter<XMLSlideShow> {
 	}
 
 	private void convertNode(ContentNode node, XMLSlideShow pptx) {
-		System.out.println("node " + node);
-		if (node instanceof Document) {
-			convertDocument((Document) node, pptx);
-		} else {
-			System.err.println("Ignored");
-		}
+		convertDocument((Document) node, pptx);
 	}
 
 	private void convertDocument(Document document, XMLSlideShow pptx) {
-		System.out.println("document " + document);
 		Title title = document.getStructuredDoctitle();
 		String mainTitle = title.getMain();
 		String subtitle = title.getSubtitle();
 		XSLFSlide slide = pptx.createSlide(pptx.findLayout("Title Slide"));
 		fillPlaceholder(slide, Placeholder.CENTERED_TITLE, mainTitle);
 		fillPlaceholder(slide, Placeholder.SUBTITLE, subtitle);
-		for (StructuralNode block : document.getBlocks()) {
-			convertStructuralNode((StructuralNode) block, pptx);
-		}
 	}
 
 	private void fillPlaceholder(XSLFSlide slide, Placeholder placeholder, String text) {
@@ -67,12 +57,6 @@ public class PptxConverter extends AbstractConverter<XMLSlideShow> {
 			textShape.clearText();
 			textShape.appendText(text, false);
 		}
-	}
-
-	private void convertStructuralNode(StructuralNode structuralNode, XMLSlideShow pptx) {
-		System.out.println("structuralNode " + structuralNode);
-		// TODO
-		convertNode(structuralNode, pptx);
 	}
 
 }
